@@ -1,5 +1,5 @@
 import Promise from 'dojo-shim/Promise';
-import { Subscribable, Observable } from 'rxjs/Observable';
+import { Subscribable, Observable } from 'dojo-core/Observable';
 import global from 'dojo-core/global';
 import { Thenable } from 'dojo/Promise';
 

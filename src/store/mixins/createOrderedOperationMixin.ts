@@ -2,7 +2,7 @@ import { Store, CrudOptions, StoreOptions, UpdateResults } from '../createStore'
 import { ComposeMixinDescriptor } from 'dojo-compose/compose';
 import WeakMap from 'dojo-shim/WeakMap';
 import Promise from 'dojo-shim/Promise';
-import { Observer, Observable } from 'rxjs/Rx';
+import { Observer, Observable } from 'dojo-core/Observable';
 import createStoreObservable from '../createStoreObservable';
 
 interface OrderedOperationState {
@@ -21,12 +21,14 @@ function processNext(state: OrderedOperationState) {
 	const promiseOrObservable = operation();
 	if (promiseOrObservable.toPromise) {
 		promiseOrObservable.subscribe(
-			null,
-			function() {
-				processNext(state);
-			},
-			function() {
-				processNext(state);
+			{
+				error() {
+					processNext(state);
+				},
+
+				complete() {
+					processNext(state);
+				}
 			}
 		);
 	}
@@ -90,7 +92,7 @@ function queueStoreOperation(operation: Function, returnsPromise?: boolean) {
 					return updateResults.successfulData;
 				}
 			);
-			observable.subscribe();
+			observable.subscribe({});
 			return observable;
 		}
 	};
